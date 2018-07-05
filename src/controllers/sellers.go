@@ -1,4 +1,4 @@
-package controller
+package controllers
 
 import (
 	"net/http"
@@ -52,7 +52,7 @@ func SellerAddOne(w http.ResponseWriter, r *http.Request) {
 	// 由于将Seller.Id解释成_id(见seller定义), 所以seller.Id需要自己指定, 没有这一步会导致插入失败
 	newSeller.Id = bson.NewObjectId()
 	// 4. insert into db
-	err = Db["sellers"].Insert(&newSeller)
+	err := Db["sellers"].Insert(&newSeller)
 	if err != nil {
 		Log.Error("insert seller falied: insert into db failed, ", err)
 		utils.FailureResponse(&w, "添加商家失败", "")

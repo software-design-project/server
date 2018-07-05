@@ -14,8 +14,15 @@ func init() {
 }
 
 func main() {
-	router := controllers.NewRouter()
 	addr := configs.HOST + ":" + configs.PORT
+
+	router := controllers.NewRouter()
+	http.Handle("/", router)
+
+	// 由于使用的是相对路径，程序需要运行在本文件所在目录下
+	fsh := http.FileServer(http.Dir("../public/"))
+	http.Handle("/public/", http.StripPrefix("/public/", fsh))
+
 	fmt.Printf("start server at %v...\n", addr)
-	http.ListenAndServe(addr, router)
+	http.ListenAndServe(addr, nil)
 }

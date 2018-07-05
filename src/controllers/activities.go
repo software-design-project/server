@@ -1,4 +1,4 @@
-package controller
+package controllers
 
 import (
 	"net/http"
@@ -52,7 +52,7 @@ func ActivityAddOne(w http.ResponseWriter, r *http.Request) {
 	// 由于将Activity.Id解释成_id(见activity定义), 所以activity.Id需要自己指定, 没有这一步会导致插入失败
 	newActivity.Id = bson.NewObjectId()
 	// 4. insert into db
-	err = Db["activitys"].Insert(&newActivity)
+	err := Db["activitys"].Insert(&newActivity)
 	if err != nil {
 		Log.Error("insert activity falied: insert into db failed, ", err)
 		utils.FailureResponse(&w, "添加活动失败", "")

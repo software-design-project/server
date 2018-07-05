@@ -1,10 +1,9 @@
-package controller
+package controllers
 
 import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 
 	. "../log"
@@ -63,8 +62,8 @@ func UserAddOne(w http.ResponseWriter, r *http.Request) {
 	// 由于将User.Id解释成_id(见user定义), 所以user.Id需要自己指定, 没有这一步会导致插入失败
 	newUser.Id = bson.NewObjectId()
 	// 密码加密
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
-	newUser.Password = string(hashedPassword)
+	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	// newUser.Password = string(hashedPassword)
 	// 4. insert into db
 	err = Db["users"].Insert(&newUser)
 	if err != nil {
@@ -127,14 +126,14 @@ func UserUpdatePassword(w http.ResponseWriter, r *http.Request) {
 	session, _ := SessionGet(w, r, "user")
 	sessionUser, _ := session["user"].(User)
 	// 3. verify the old password is correct or not
-	err := bcrypt.CompareHashAndPassword([]byte(passwords["oldPassword"]), []byte(sessionUser.Password))
-	if err != nil {
-		Log.Error("update password failed: old password is incorrect")
-		utils.FailureResponse(&w, "原密码错误", "")
-		return
-	}
+	// err := bcrypt.CompareHashAndPassword([]byte(passwords["oldPassword"]), []byte(sessionUser.Password))
+	// if err != nil {
+	// 	Log.Error("update password failed: old password is incorrect")
+	// 	utils.FailureResponse(&w, "原密码错误", "")
+	// 	return
+	// }
 	// 4. update data in db
-	err = Db["users"].Update(bson.M{"_id": sessionUser.Id},
+	err := Db["users"].Update(bson.M{"_id": sessionUser.Id},
 		bson.M{"$set": bson.M{"password": passwords["newPassword"]}})
 	if err != nil {
 		Log.Error("update password failed: write db failed, ", err)
@@ -178,12 +177,12 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// 3. 验证密码是否正确
-	err = bcrypt.CompareHashAndPassword([]byte(existedUser.Password), []byte(user.Password))
-	if err != nil {
-		Log.Error("user login failed: password is incorrect, ")
-		utils.FailureResponse(&w, "登录失败,密码错误", "")
-		return
-	}
+	// err = bcrypt.CompareHashAndPassword([]byte(existedUser.Password), []byte(user.Password))
+	// if err != nil {
+	// 	Log.Error("user login failed: password is incorrect, ")
+	// 	utils.FailureResponse(&w, "登录失败,密码错误", "")
+	// 	return
+	// }
 	// 4. user login successfully, save user into session
 	session, _ := SessionGet(w, r, "user")
 	session["user"] = existedUser
