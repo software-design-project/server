@@ -8,6 +8,7 @@ type Activity struct {
 	Id          bson.ObjectId `bson:"_id"`
 	SellerId    bson.ObjectId `bson:"sellerId"`
 	Name        string        `bson:"name"`
+	Type        int           `bson:"type"`
 	Slogan      string        `bson:"slogan"`
 	Price       int           `bson:"price"`
 	Time        int64         `bson:"time"`
