@@ -189,7 +189,7 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 	_ = SessionSet(w, r, "user", session)
 	// 5. response successfully
 	Log.Noticef("user %v login successfully", existedUser.Name)
-	utils.SuccessResponse(&w, "登录成功", "")
+	utils.SuccessResponse(&w, "登录成功", existedUser)
 }
 
 func UserRegister(w http.ResponseWriter, r *http.Request) {
