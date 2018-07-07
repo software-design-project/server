@@ -40,6 +40,20 @@ func OrderGetAll(w http.ResponseWriter, r *http.Request) {
 	utils.SuccessResponse(&w, "获取订单列表成功", orders)
 }
 
+func OrderGetAllByUserId(w http.ResponseWriter, r *http.Request) {
+	userId := mux.Vars(r)["userId"]
+
+	var orders []Order
+	err := Db["orders"].Find(bson.M{"userId": userId}).All(&orders)
+	if err != nil {
+		Log.Errorf("get all orders failed, %v", err)
+		utils.FailureResponse(&w, "根据userid获取订单列表失败", "")
+		return
+	}
+	Log.Notice("get all order successfully")
+	utils.SuccessResponse(&w, "根据userid获取订单列表成功", orders)
+}
+
 func OrderAddOne(w http.ResponseWriter, r *http.Request) {
 	// 1. load request's body
 	newOrder := Order{}
@@ -108,6 +122,7 @@ func OrderDeleteOne(w http.ResponseWriter, r *http.Request) {
 var OrderRoutes Routes = Routes{
 	Route{"OrderGetOne", "GET", "/order/{orderId}", OrderGetOne},
 	Route{"OrderGetAll", "GET", "/order/", OrderGetAll},
+	Route{"OrderGetAllByUserId", "GET", "/order/user/{userId}", OrderGetAllByUserId},
 	Route{"OrderAddOne", "POST", "/order/", OrderAddOne},
 	Route{"OrderUpdateOne", "PUT", "/order/{orderId}", OrderUpdateOne},
 	Route{"OrderDeleteOne", "DELETE", "/order/{orderId}", OrderDeleteOne},
