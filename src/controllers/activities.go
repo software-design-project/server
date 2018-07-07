@@ -17,7 +17,7 @@ func ActivityGetOne(w http.ResponseWriter, r *http.Request) {
 	activityId := vars["activityId"]
 
 	activity := Activity{}
-	err := Db["activitys"].FindId(bson.ObjectIdHex(activityId)).One(&activity)
+	err := Db["activities"].FindId(bson.ObjectIdHex(activityId)).One(&activity)
 	if err != nil {
 		Log.Errorf("Get activity id: %s failed, %v", activityId, err)
 		utils.FailureResponse(&w, "获取活动信息失败", "")
@@ -30,7 +30,7 @@ func ActivityGetOne(w http.ResponseWriter, r *http.Request) {
 
 func ActivityGetAll(w http.ResponseWriter, r *http.Request) {
 	var activitys []Activity
-	err := Db["activitys"].Find(nil).All(&activitys)
+	err := Db["activities"].Find(nil).All(&activitys)
 	if err != nil {
 		Log.Errorf("get all activitys failed, %v", err)
 		utils.FailureResponse(&w, "获取活动列表失败", "")
@@ -52,7 +52,7 @@ func ActivityAddOne(w http.ResponseWriter, r *http.Request) {
 	// 由于将Activity.Id解释成_id(见activity定义), 所以activity.Id需要自己指定, 没有这一步会导致插入失败
 	newActivity.Id = bson.NewObjectId()
 	// 4. insert into db
-	err := Db["activitys"].Insert(&newActivity)
+	err := Db["activities"].Insert(&newActivity)
 	if err != nil {
 		Log.Error("insert activity falied: insert into db failed, ", err)
 		utils.FailureResponse(&w, "添加活动失败", "")
@@ -80,7 +80,7 @@ func ActivityUpdateOne(w http.ResponseWriter, r *http.Request) {
 	updateActivity := bson.M{}
 	_ = bson.Unmarshal(updateData, &updateActivity)
 	// 此处更新时如果没有"$set",会将整行直接覆盖，而不是按需修改
-	err := Db["activitys"].Update(bson.M{"_id": newActivity.Id}, bson.M{"$set": updateActivity})
+	err := Db["activities"].Update(bson.M{"_id": newActivity.Id}, bson.M{"$set": updateActivity})
 	if err != nil {
 		Log.Error("update activity falied: failed to update data into db, ", err)
 		utils.FailureResponse(&w, "修改活动信息失败", "")
@@ -94,7 +94,7 @@ func ActivityUpdateOne(w http.ResponseWriter, r *http.Request) {
 func ActivityDeleteOne(w http.ResponseWriter, r *http.Request) {
 	activityId := mux.Vars(r)["activityId"]
 
-	err := Db["activitys"].Remove(bson.M{"_id": bson.ObjectIdHex(activityId)})
+	err := Db["activities"].Remove(bson.M{"_id": bson.ObjectIdHex(activityId)})
 	if err != nil {
 		Log.Error("delete activity from db failed: ", err)
 		utils.FailureResponse(&w, "删除活动失败", "")
@@ -106,9 +106,9 @@ func ActivityDeleteOne(w http.ResponseWriter, r *http.Request) {
 }
 
 var ActivityRoutes Routes = Routes{
-	Route{"ActivityGetOne", "GET", "/activity/{activityId}", BasicAuth(ActivityGetOne)},
+	Route{"ActivityGetOne", "GET", "/activity/{activityId}", ActivityGetOne},
 	Route{"ActivityGetAll", "GET", "/activity/", ActivityGetAll},
 	Route{"ActivityAddOne", "POST", "/activity/", ActivityAddOne},
-	Route{"ActivityUpdateOne", "PUT", "/activity/{activityId}", BasicAuth(ActivityUpdateOne)},
+	Route{"ActivityUpdateOne", "PUT", "/activity/{activityId}", ActivityUpdateOne},
 	Route{"ActivityDeleteOne", "DELETE", "/activity/{activityId}", ActivityDeleteOne},
 }

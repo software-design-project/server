@@ -106,9 +106,9 @@ func SellerDeleteOne(w http.ResponseWriter, r *http.Request) {
 }
 
 var SellerRoutes Routes = Routes{
-	Route{"SellerGetOne", "GET", "/seller/{sellerId}", BasicAuth(SellerGetOne)},
+	Route{"SellerGetOne", "GET", "/seller/{sellerId}", SellerGetOne},
 	Route{"SellerGetAll", "GET", "/seller/", SellerGetAll},
 	Route{"SellerAddOne", "POST", "/seller/", SellerAddOne},
-	Route{"SellerUpdateOne", "PUT", "/seller/{sellerId}", BasicAuth(SellerUpdateOne)},
+	Route{"SellerUpdateOne", "PUT", "/seller/{sellerId}", SellerUpdateOne},
 	Route{"SellerDeleteOne", "DELETE", "/seller/{sellerId}", SellerDeleteOne},
 }

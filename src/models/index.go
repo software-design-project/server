@@ -12,6 +12,9 @@ import (
 
 var Db = make(map[string]*mgo.Collection)
 var modelsList = []string{
+	"activities",
+	"orders",
+	"sellers",
 	"users",
 }
 

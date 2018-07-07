@@ -106,9 +106,9 @@ func OrderDeleteOne(w http.ResponseWriter, r *http.Request) {
 }
 
 var OrderRoutes Routes = Routes{
-	Route{"OrderGetOne", "GET", "/order/{orderId}", BasicAuth(OrderGetOne)},
+	Route{"OrderGetOne", "GET", "/order/{orderId}", OrderGetOne},
 	Route{"OrderGetAll", "GET", "/order/", OrderGetAll},
 	Route{"OrderAddOne", "POST", "/order/", OrderAddOne},
-	Route{"OrderUpdateOne", "PUT", "/order/{orderId}", BasicAuth(OrderUpdateOne)},
+	Route{"OrderUpdateOne", "PUT", "/order/{orderId}", OrderUpdateOne},
 	Route{"OrderDeleteOne", "DELETE", "/order/{orderId}", OrderDeleteOne},
 }
